@@ -11,6 +11,9 @@
 
 #define DEBUG 1
 #define PASSWORD_LENGTH 8
+#define WRONG_PASSWORD_TONE 262
+#define READY_TONE 880
+#define DURATION 1000
 
 int password[PASSWORD_LENGTH] =
 { SWITCH_UP, SWITCH_UP, SWITCH_DOWN, SWITCH_DOWN,
@@ -20,14 +23,18 @@ int userInput[PASSWORD_LENGTH];
 int inputCount;
 
 void setup() {
-  clearUserInput();
-  inputCount = 0;
+  setDefaults();
 }
 
 void loop() {
   readButtons();
   if (isPassword()) {
 
+  }
+  else {
+    Esplora.tone(WRONG_PASSWORD_TONE, DURATION);
+    setDefaults();
+    delay(DURATION);
   }
 }
 
@@ -61,9 +68,12 @@ void setUserInput(int value) {
   inputCount += 1;
 }
 
-void clearUserInput() {
+void setDefaults() {
   for (int i = 0; i < PASSWORD_LENGTH; i++) {
     userInput[i] = 0;
   }
+  inputCount = 0;
+  Esplora.tone(READY_TONE, DURATION/2);
+  Esplora.noTone();
 }
 
