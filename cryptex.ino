@@ -9,12 +9,33 @@
 
 #include <Esplora.h>
 
-void setup() {
-  // put your setup code here, to run once:
+#define DEBUG 1
+#define PASSWORD_LENGTH 8
 
+int password[PASSWORD_LENGTH] = 
+{SWITCH_UP, SWITCH_UP, SWITCH_DOWN, SWITCH_DOWN, 
+SWITCH_LEFT, SWITCH_RIGHT, SWITCH_LEFT, SWITCH_RIGHT};
+int userInput[PASSWORD_LENGTH];
+int inputPosition;
+
+void setup() {
+  clearUserInput();
+  inputPosition = 0;
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
-
+  readButtons();
 }
+
+void readButtons(){
+  if(Esplora.readButton(SWITCH_UP) == LOW){
+    
+  }
+}
+
+void clearUserInput(){
+  for(int i = 0; i < PASSWORD_LENGTH; i++){
+    userInput[i] = 0;
+  }
+}
+
