@@ -29,8 +29,22 @@ void loop() {
 
 void readButtons(){
   if(Esplora.readButton(SWITCH_UP) == LOW){
-    
+     setUserInput(SWITCH_UP);
   }
+  else if (Esplora.readButton(SWITCH_DOWN) == LOW){
+    setUserInput(SWITCH_DOWN);
+  }
+  else if (Esplora.readButton(SWITCH_LEFT) == LOW){
+    setUserInput(SWITCH_LEFT);
+  }
+  else if (Esplora.readButton(SWITCH_RIGHT) == LOW){
+    setUserInput(SWITCH_RIGHT);
+  }
+}
+
+void setUserInput(int value){
+  userInput[inputPosition] = value;
+  inputPosition +=1;
 }
 
 void clearUserInput(){
