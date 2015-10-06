@@ -73,7 +73,7 @@ void setDefaults() {
     userInput[i] = 0;
   }
   inputCount = 0;
-  Esplora.tone(READY_TONE, DURATION/2);
+  Esplora.tone(READY_TONE, DURATION / 2);
   Esplora.noTone();
 }
 
