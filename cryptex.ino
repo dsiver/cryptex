@@ -10,15 +10,17 @@
 #include <Esplora.h>
 
 #define DEBUG 1
-#define PASSWORD_LENGTH 8
+//#define PASSWORD_LENGTH 8
+#define PASSWORD_LENGTH 1
 #define WRONG_PASSWORD_TONE 262
 #define READY_TONE 880
 #define DURATION 1000
 
-int password[PASSWORD_LENGTH] =
-{ SWITCH_UP, SWITCH_UP, SWITCH_DOWN, SWITCH_DOWN,
-  SWITCH_LEFT, SWITCH_RIGHT, SWITCH_LEFT, SWITCH_RIGHT
-};
+//int password[PASSWORD_LENGTH] =
+//{ SWITCH_UP, SWITCH_UP, SWITCH_DOWN, SWITCH_DOWN,
+//  SWITCH_LEFT, SWITCH_RIGHT, SWITCH_LEFT, SWITCH_RIGHT
+//};
+int password[1] = {SWITCH_UP};
 int userInput[PASSWORD_LENGTH];
 int inputCount;
 
@@ -28,24 +30,25 @@ void setup() {
 
 void loop() {
   readButtons();
-  if (isPassword()) {
-
-  }
-  else {
-    Esplora.tone(WRONG_PASSWORD_TONE, DURATION);
-    setDefaults();
-    delay(DURATION);
+  if (inputCount == PASSWORD_LENGTH) {
+    if (isPassword()) {
+      Serial.println("Correct password");
+    }
+    else{
+      Serial.print("Wrong password");
+    }
   }
 }
 
 boolean isPassword() {
-  if (inputCount == PASSWORD_LENGTH && isPassword()) {
-    for (int i = 0; i < PASSWORD_LENGTH; i++) {
-      if (password[i] != userInput[i]) {
-        return false;
-      }
+  Serial.println("In isPassword()");
+  for (int i = 0; i < PASSWORD_LENGTH; i++) {
+    if (password[i] != userInput[i]) {
+      Serial.println("");
+      return false;
     }
   }
+  return true;
 }
 
 void readButtons() {
@@ -69,11 +72,9 @@ void setUserInput(int value) {
 }
 
 void setDefaults() {
+  inputCount = 0;
   for (int i = 0; i < PASSWORD_LENGTH; i++) {
     userInput[i] = 0;
   }
-  inputCount = 0;
-  Esplora.tone(READY_TONE, DURATION / 2);
-  Esplora.noTone();
 }
 
