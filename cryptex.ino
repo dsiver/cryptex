@@ -33,10 +33,13 @@ void loop() {
   if (inputCount == PASSWORD_LENGTH) {
     if (isPassword()) {
       Serial.println("Correct password");
+      
     }
-    else{
-      Serial.print("Wrong password");
+    else {
+      Serial.println("Wrong password");
+      
     }
+    setDefaults();
   }
 }
 
@@ -44,7 +47,6 @@ boolean isPassword() {
   Serial.println("In isPassword()");
   for (int i = 0; i < PASSWORD_LENGTH; i++) {
     if (password[i] != userInput[i]) {
-      Serial.println("");
       return false;
     }
   }
@@ -77,4 +79,3 @@ void setDefaults() {
     userInput[i] = 0;
   }
 }
-
