@@ -11,26 +11,34 @@
 
 #define DEBUG 1
 #define PASSWORD_LENGTH 8
-//#define PASSWORD_LENGTH 1
 #define WRONG_PASSWORD_TONE 262
 #define READY_TONE 880
 #define DURATION 1000
 
-int password[PASSWORD_LENGTH] =
-{ SWITCH_UP, SWITCH_UP, SWITCH_DOWN, SWITCH_DOWN,
-  SWITCH_LEFT, SWITCH_RIGHT, SWITCH_LEFT, SWITCH_RIGHT
-};
-int userInput[PASSWORD_LENGTH];
-int inputCount;
+int upButtonState, downButtonState, leftButtonState, rightButtonState;
+int oldUpButtonState, oldDownButtonState, oldLeftButtonState, oldRightButtonState;
+int inputCount, buttonStateSum;
+String password;
+String userInput;
 
 void setup() {
-  delay(2000);
-  setDefaults();
-  printArray(password, "password:");
+  upButtonState = 0;
+  downButtonState = 0;
+  leftButtonState = 0;
+  rightButtonState = 0;
+  oldUpButtonState = 0;
+  oldDownButtonState = 0;
+  oldLeftButtonState = 0;
+  oldRightButtonState = 0;
+  buttonStateSum = 0;
+  inputCount = 0;
+  password = String(SWITCH_UP) + String(SWITCH_UP) + String(SWITCH_DOWN) +
+             String(SWITCH_DOWN) + String(SWITCH_LEFT) + String(SWITCH_RIGHT) +
+             String(SWITCH_LEFT) + String(SWITCH_RIGHT);
+  Serial.begin(9600);
 }
 
 void loop() {
-  Serial.println("inputCount: " + String(inputCount));
   readButtons();
   if (inputCount == PASSWORD_LENGTH) {
     if (isPassword()) {
@@ -39,60 +47,57 @@ void loop() {
     else {
       Serial.println("Wrong password");
     }
-    printArray(password, "password");
-    printArray(userInput, "userInput");
-    setDefaults();
+    inputCount = 0;
+    userInput = "";
   }
-  delay(2000);
-}
-
-void printArray(int array[], String arrayName){
-  String output = arrayName + ": ";
-  for (int i = 0; i < sizeof(array) / sizeof(int); i++){
-    output += String(array[i]) + " ";
-  }
-  Serial.println(output);
+  delay(20);
 }
 
 boolean isPassword() {
-  Serial.println("In isPassword()");
-  for (int i = 0; i < PASSWORD_LENGTH; i++) {
-    if (password[i] != userInput[i]) {
-      return false;
-      break;
+  printPasswordAndInput();
+  return userInput.equals(password);
+}
+
+void readButtons() {
+  upButtonState = Esplora.readButton(SWITCH_UP);
+  downButtonState = Esplora.readButton(SWITCH_DOWN);
+  leftButtonState = Esplora.readButton(SWITCH_LEFT);
+  rightButtonState = Esplora.readButton(SWITCH_RIGHT);
+
+  if (upButtonState != oldUpButtonState) {
+    if (upButtonState == LOW) {
+      setUserInput(SWITCH_UP);
     }
   }
-  return true;
+  else if (downButtonState != oldDownButtonState) {
+    if (downButtonState == LOW) {
+      setUserInput(SWITCH_DOWN);
+    }
+  }
+  else if (leftButtonState != oldLeftButtonState) {
+    if (leftButtonState == LOW) {
+      setUserInput(SWITCH_LEFT);
+    }
+  }
+  else if (rightButtonState != oldRightButtonState) {
+    if (rightButtonState == LOW) {
+      setUserInput(SWITCH_RIGHT);
+    }
+  }
+  oldUpButtonState = upButtonState;
+  oldDownButtonState = downButtonState;
+  oldLeftButtonState = leftButtonState;
+  oldRightButtonState = rightButtonState;
 }
 
-boolean readButtons() {
-  if (Esplora.readButton(SWITCH_UP) == LOW) {
-    setUserInput(SWITCH_UP);
-    return true;
-  }
-  else if (Esplora.readButton(SWITCH_DOWN) == LOW) {
-    setUserInput(SWITCH_DOWN);
-    return true;
-  }
-  else if (Esplora.readButton(SWITCH_LEFT) == LOW) {
-    setUserInput(SWITCH_LEFT);
-    return true;
-  }
-  else if (Esplora.readButton(SWITCH_RIGHT) == LOW) {
-    setUserInput(SWITCH_RIGHT);
-    return true;
-  }
-  return false;
+void setUserInput(int switchNumber) {
+  inputCount++;
+  Serial.println("inputCount: " + String(inputCount));
+  userInput += String(switchNumber);
 }
 
-void setUserInput(int value) {
-  userInput[inputCount] = value;
-  inputCount += 1;
+void printPasswordAndInput() {
+  Serial.println("password:\t" + password);
+  Serial.println("userInput:\t" + userInput);
 }
 
-void setDefaults() {
-  inputCount = 0;
-  for (int i = 0; i < PASSWORD_LENGTH; i++) {
-    userInput[i] = 0;
-  }
-}
