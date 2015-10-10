@@ -59,7 +59,7 @@ void loop() {
       delay(RESET_DELAY);
       servo.write(SERVO_MIN);
       delay(RESET_DELAY);
-      Esplora.tone(READY_TONE, TONE_DURATION);
+      Esplora.tone(READY_TONE, TONE_DURATION/6);
     }
     else {
       Serial.println("Wrong password");
